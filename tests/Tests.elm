@@ -4,29 +4,13 @@ import Test exposing (..)
 import Expect
 
 import Tile exposing (..)
+import Suit exposing (..)
 import Meld exposing (..)
 import EveryDict exposing (..)
 
 -- all : Test
 -- all =
 --   Test.concat [suitMatching, melds]
-
-suitMatching : Test
-suitMatching = 
-  describe "Tests for tile suits"
-    [ test "dummy" <|
-        \_ -> isSimple (Bamboo Two) |> Expect.equal True
-    , test "dummy2" <|
-        \_ -> isDragon (Bamboo Two) |> Expect.equal False
-    , test "dummy3" <|
-        \_ -> isDragon Red |> Expect.equal True
-    , test "dummy4" <|
-        \_ -> isWind (Bamboo Two) |> Expect.equal False
-    , test "dummy5" <|
-        \_ -> isWind East |> Expect.equal True
-    , test "dummy6" <|
-        \_ -> isSimple East |> Expect.equal False
-    ]
 
 melds : Test
 melds = 
@@ -52,24 +36,4 @@ melds =
     , test "invalid 6" <|
         \_ -> meld [Bamboo Two, Bamboo Four, Character Three] |> Expect.equal Invalid
     ]
-
-suitGrouping : Test
-suitGrouping = 
-  describe "suit grouping tests"
-    let 
-      grouped = groupBySuits [East, Bamboo Two, Red, Circle Nine, Character Seven, Circle Three, North, Red]
-    in
-      [ test "asdfasdf" <|
-          \_ -> EveryDict.get Dragon grouped |> Expect.equal True
-      , test "htrdsf" <|
-          \_ -> isDragon (Bamboo Two) |> Expect.equal False
-      , test "dhferg" <|
-          \_ -> isDragon Red |> Expect.equal True
-      , test "ehqwf" <|
-          \_ -> isWind (Bamboo Two) |> Expect.equal False
-      , test "hrthd" <|
-          \_ -> isWind East |> Expect.equal True
-      , test "aah3" <|
-          \_ -> isSimple East |> Expect.equal False
-      ]
 

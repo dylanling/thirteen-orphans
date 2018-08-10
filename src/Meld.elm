@@ -1,6 +1,7 @@
 module Meld exposing (..)
 
 import Tile exposing (..)
+import Suit exposing (..)
 import Utilities exposing (..)
 import EveryDict
 

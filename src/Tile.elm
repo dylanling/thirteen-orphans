@@ -1,8 +1,5 @@
 module Tile exposing (..)
 
-import Utilities exposing (..)
-import EveryDict
-
 type Rank =
     One
   | Two
@@ -26,13 +23,6 @@ type Tile =
   | West
   | North
 
-type Suit =
-    Dragons
-  | Winds
-  | Bamboos
-  | Circles
-  | Characters
-
 int : Rank -> Int
 int rank =
   case rank of 
@@ -45,27 +35,3 @@ int rank =
     Seven -> 7
     Eight -> 8
     Nine -> 9
-
-suit : Tile -> Suit
-suit tile =
-  case tile of
-    Bamboo _ -> Bamboos
-    Circle _ -> Circles
-    Character _ -> Characters
-    Red -> Dragons
-    Green -> Dragons
-    White -> Dragons
-    East -> Winds
-    South -> Winds
-    West -> Winds
-    North -> Winds
-
-groupBySuits : List Tile -> EveryDict.EveryDict Suit (List Tile)
-groupBySuits tiles = 
-  List.map (\tile -> (suit tile, tile)) tiles
-    |> List.foldl 
-      (\(s, t) dict -> EveryDict.update 
-        s 
-        (insertOrAppend t)
-        dict)
-      EveryDict.empty
