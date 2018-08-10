@@ -1,6 +1,8 @@
 module Meld exposing (..)
 
 import Tile exposing (..)
+import Utilities exposing (..)
+import EveryDict
 
 type Meld = 
     Eyes Tile 
@@ -27,6 +29,16 @@ meld tiles =
       toMeld (allEqualTo a) tiles (Kong a)
     _ -> 
       Invalid
+
+meldableGroups : List Tile -> List (List Tile)
+meldableGroups tiles =
+  let 
+    grouped = groupBySuits tiles
+  in
+    [Bamboos, Circles, Characters, Dragons, Winds]
+      |> List.map (\suit -> groupedBySuitEntry suit grouped)
+      |> List.foldl (++) []
+      |> filterNot List.isEmpty
 
 toMeld : (List Tile -> Bool) -> List Tile -> Meld -> Meld
 toMeld predicate list meld =
@@ -67,3 +79,23 @@ sameSimple a b =
     (Circle _, Circle _) -> True
     (Character _, Character _) -> True
     _ -> False
+
+groupedBySuitEntry : Suit -> EveryDict.EveryDict Suit (List Tile) -> List (List Tile)
+groupedBySuitEntry suit dict =
+  case suit of
+    Bamboos ->
+      [getSuitTiles suit dict]
+    Circles ->
+      [getSuitTiles suit dict]
+    Characters ->
+      [getSuitTiles suit dict]
+    Dragons ->
+      grouped (getSuitTiles suit dict)
+    Winds ->
+      grouped (getSuitTiles suit dict)
+
+getSuitTiles : Suit -> EveryDict.EveryDict Suit (List Tile) -> List Tile
+getSuitTiles suit dict =
+  case EveryDict.get suit dict of
+    Just tiles -> tiles
+    Nothing -> []

@@ -1,7 +1,7 @@
 module Tile exposing (..)
 
+import Utilities exposing (..)
 import EveryDict
-import List.Extra
 
 type Rank =
     One
@@ -13,10 +13,6 @@ type Rank =
   | Seven
   | Eight
   | Nine
-
-type Honor =
-    Dragon
-  | Wind
 
 type Tile = 
     Bamboo Rank 
@@ -36,31 +32,6 @@ type Suit =
   | Bamboos
   | Circles
   | Characters
-
-isSimple : Tile -> Bool
-isSimple tile =
-  case tile of
-    Bamboo _ -> True
-    Circle _ -> True
-    Character _ -> True
-    _ -> False
-
-isDragon : Tile -> Bool
-isDragon tile =
-  case tile of
-    Red -> True
-    Green -> True
-    White -> True
-    _ -> False
-
-isWind : Tile -> Bool
-isWind tile =
-  case tile of
-    East -> True
-    South -> True
-    West -> True
-    North -> True
-    _ -> False
 
 int : Rank -> Int
 int rank =
@@ -89,13 +60,6 @@ suit tile =
     West -> Winds
     North -> Winds
 
-groupedByMeldable : List Tile -> List (List Tile)
-groupedByMeldable tiles =
-  let 
-    grouped = groupBySuits tiles
-  in
-    EveryDict.values grouped
-
 groupBySuits : List Tile -> EveryDict.EveryDict Suit (List Tile)
 groupBySuits tiles = 
   List.map (\tile -> (suit tile, tile)) tiles
@@ -105,28 +69,3 @@ groupBySuits tiles =
         (insertOrAppend t)
         dict)
       EveryDict.empty
-
-groupedBySuitEntry : Suit -> EveryDict.EveryDict Suit (List Tile) -> List (List Tile)
-groupedBySuitEntry suit dict =
-  case suit of
-    Bamboos ->
-      [getSuitTiles suit dict]
-    Circles ->
-      [getSuitTiles suit dict]
-    Characters ->
-      [getSuitTiles suit dict]
-    Dragons ->
-      []
-    _ -> []
-
-getSuitTiles : Suit -> EveryDict.EveryDict Suit (List Tile) -> List Tile
-getSuitTiles suit dict =
-  case EveryDict.get suit dict of
-    Just tiles -> tiles
-    Nothing -> []
-
-insertOrAppend : a -> Maybe (List a) -> Maybe (List a)
-insertOrAppend item m = 
-  case m of
-    Just list -> Just (list ++ [item])
-    Nothing -> Just [item]
