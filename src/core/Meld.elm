@@ -33,7 +33,7 @@ meld tiles =
 
 meldableGroups : List Tile -> List (List Tile)
 meldableGroups tiles =
-  [Bamboos, Circles, Characters, Dragons, Winds]
+  [Winds, Dragons, Characters, Circles, Bamboos]
     |> List.map (\suit -> groupedBySuitEntry suit (groupBySuits tiles))
     |> List.foldl (++) []
     |> filterNot List.isEmpty

@@ -2,8 +2,9 @@ module CoreTests exposing (..)
 
 import Test exposing (..)
 
-import TileTests exposing (..)
+import TileTests exposing ( intRankTest )
+import MeldTests exposing ( meldTest, meldableGroupsTest )
 
 suite : Test
 suite =
-  Test.concat [tileRanks]
+  Test.concat [intRankTest, meldTest, meldableGroupsTest]

@@ -8,3 +8,6 @@ type alias Hand =
   , open : List Meld
   }
 
+melds : Hand -> List (List Meld)
+melds hand =
+  []
