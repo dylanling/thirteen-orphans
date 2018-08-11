@@ -1,9 +1,14 @@
 module Meld exposing (..)
 
+import EveryDict
+import List.Unique
+import Ordering exposing (Ordering)
+
 import Tile exposing (..)
 import Suit exposing (..)
+import TileOrdering exposing (..)
 import Utilities exposing (..)
-import EveryDict
+
 
 type Meld = 
     Eyes Tile 
@@ -25,7 +30,7 @@ meld tiles =
           Pong _ -> 
             pong
           _ ->
-            toMeld isChow tiles (Chow a b c)
+            toMeld isChow tiles (normalize (Chow a b c))
     [a, b, c, d] ->
       toMeld (allEqualTo a) tiles (Kong a)
     _ -> 
@@ -35,52 +40,71 @@ meld tiles =
 -- return all legal partitions of the list such that each
 -- partition can be evaluated as a meld
 -- 
--- while recursing we need to aggressively terminate any
+-- while branching we need to aggressively prune any
 -- time we've selected a partition that cannot be evaluated
 -- as a meld given that Bell numbers grow too quickly to
 -- possibly evaluate all partitions
-
+--
 -- we should also quickly terminate for any list 
 -- of non-simples.
-melds : List Tile -> List (List Tile)
+melds : List Tile -> List (List Meld)
 melds tiles =
   case tiles of
     [] -> 
       []
     first::_ -> 
-      if isHonor (suit first) 
-      then meldsForHonors tiles 
-      else meldsForSimples tiles
+      let
+        tileMelds = 
+          if isHonor (suit first) 
+          then meldsForHonors tiles
+           else meldsForSimples tiles
+      in
+        tileMelds 
+          |> List.map (List.map meld)
+          |> List.map (List.sortWith meldOrdering)
+          |> List.Unique.fromList
+          |> List.Unique.toList
 
 -- we're cheating a bit here because a set of some honor
 -- can only ever have one melded value given that there are
 -- at most four of any individual honor. otherwise we'd
 -- have to do some make coin change dynamic programming nonsense
-meldsForHonors : List Tile -> List (List Tile)
+meldsForHonors : List Tile -> List (List (List Tile))
 meldsForHonors honors =
   if List.member (List.length honors) [2, 3, 4]
-  then [honors]
+  then [[honors]]
   else []
 
-meldsForSimples : List Tile -> List (List Tile)
+meldsForSimples : List Tile -> List (List (List Tile))
 meldsForSimples simples = 
-  if List.length simples < 5
-  then 
-    case meld simples of
-      Invalid -> []
-      _ -> [simples]
-  else 
-    []
+  let
+    optimizedBloat = \tile melds -> bloat tile melds |> List.filter allCanBecomeValidMelds
+    applyBloat = \n l -> l |> List.map (optimizedBloat n) |> flatten
+  in  
+    List.foldl applyBloat [[]] simples
+      |> List.filter allValidMelds
 
-meldsForSimplesStartingWith : List Tile -> List Tile -> List Tile -> List (List Tile)
-meldsForSimplesStartingWith current all tiles =
-  case current of
+allValidMelds : List (List Tile) -> Bool
+allValidMelds melds =
+  case melds of
     [] -> 
-      []
-    _ -> 
-      []
+      True
+    x::xs -> 
+      if meld x == Invalid 
+      then False
+      else allValidMelds xs
 
-meldsWithTileAdded : Tile -> List (List Tile) -> List (List Tile)
+allCanBecomeValidMelds : List (List Tile) -> Bool
+allCanBecomeValidMelds melds =
+  case melds of
+    [] -> True
+    x::xs -> canBecomeValidMeld x && allCanBecomeValidMelds xs
+
+canBecomeValidMeld : List Tile -> Bool
+canBecomeValidMeld tiles =
+  case tiles of
+    [] -> True
+    x::xs -> canJoinMeld x xs
 
 canJoinMeld : Tile -> List Tile -> Bool
 canJoinMeld tile tiles =
@@ -133,6 +157,17 @@ isChow tiles =
       sequential (int a) (int b) (int c)
     _ -> False
 
+normalize : Meld -> Meld
+normalize meld = 
+  case meld of
+    Chow a b c -> 
+      case List.sortWith tileOrdering [a, b, c] of
+        [x, y, z] -> Chow x y z
+        _ -> meld
+    _ -> 
+      meld
+
+
 sequential : Int -> Int -> Int -> Bool
 sequential a b c =
   let
@@ -169,3 +204,26 @@ getSuitTiles suit dict =
   case EveryDict.get suit dict of
     Just tiles -> tiles
     Nothing -> []
+
+meldOrdering : Ordering Meld
+meldOrdering = 
+  Ordering.byFieldWith tileOrdering firstTileOf
+    |> Ordering.breakTiesWith (Ordering.byField basicMeldOrder)
+
+basicMeldOrder : Meld -> Int
+basicMeldOrder meld =
+  case meld of
+    Eyes _ -> 0
+    Pong _ -> 1
+    Kong _ -> 2
+    Chow _ _ _ -> 3
+    Invalid -> 4
+
+firstTileOf : Meld -> Tile
+firstTileOf meld = 
+  case meld of
+    Chow tile _ _ -> tile
+    Eyes tile -> tile
+    Pong tile -> tile 
+    Kong tile -> tile
+    _ -> North -- shouldn't happen, but just in case, North is the last tile by order

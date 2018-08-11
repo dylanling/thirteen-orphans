@@ -13,6 +13,10 @@ grouped list =
       EveryDict.empty
     |> EveryDict.values
 
+flatten : List (List a) -> List a
+flatten list =
+  List.foldr (++) [] list
+
 insertOrAppend : a -> Maybe (List a) -> Maybe (List a)
 insertOrAppend item m = 
   case m of
@@ -48,3 +52,10 @@ bloat x list =
   List.range 0 (List.length list)
     |> List.map (\i -> (List.take i list, List.drop i list))
     |> List.map (appendToHeadOfSecond x)
+
+partitions : List a -> List (List (List a))
+partitions list =
+  let
+    applyBloat = \n l -> l |> List.map (bloat n) |> flatten
+  in  
+    List.foldr applyBloat [[]] list
