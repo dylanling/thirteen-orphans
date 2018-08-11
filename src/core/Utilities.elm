@@ -59,3 +59,15 @@ partitions list =
     applyBloat = \n l -> l |> List.map (bloat n) |> flatten
   in  
     List.foldr applyBloat [[]] list
+
+cartesianProduct : List (List a) -> List (List a)
+cartesianProduct lists =
+  case lists of 
+    [] -> 
+      [[]]
+    x::xs -> 
+      let
+        subproduct = cartesianProduct xs
+        applyToSubProduct = \k -> List.map ((::) k) subproduct
+      in
+        List.map applyToSubProduct x |> flatten

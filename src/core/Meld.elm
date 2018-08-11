@@ -17,6 +17,13 @@ type Meld =
   | Chow Tile Tile Tile
   | Invalid
 
+melds : List Tile -> List (List Meld)
+melds tiles =
+  meldableGroups tiles
+    |> List.map meldsInGroup
+    |> cartesianProduct
+    |> List.map flatten
+
 meld : List Tile -> Meld
 meld tiles =
   case tiles of
@@ -47,8 +54,8 @@ meld tiles =
 --
 -- we should also quickly terminate for any list 
 -- of non-simples.
-melds : List Tile -> List (List Meld)
-melds tiles =
+meldsInGroup : List Tile -> List (List Meld)
+meldsInGroup tiles =
   case tiles of
     [] -> 
       []

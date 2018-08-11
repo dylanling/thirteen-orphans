@@ -1,24 +1,39 @@
 module Print exposing (..)
 
 import Tile exposing (..)
+import Meld exposing (..)
 import TileOrdering exposing (tileOrdering)
 
-display : (Tile -> String) -> String -> List Tile -> String
-display show delimiter tiles =
+displayTiles : (Tile -> String) -> String -> List Tile -> String
+displayTiles show delimiter tiles =
   tiles 
     |> List.map show
     |> String.join delimiter
 
-displaySorted : (Tile -> String) -> String -> List Tile -> String
-displaySorted show delimiter tiles = 
-  display show delimiter (List.sortWith tileOrdering tiles)
+displaySortedTiles : (Tile -> String) -> String -> List Tile -> String
+displaySortedTiles show delimiter tiles = 
+  displayTiles show delimiter (List.sortWith tileOrdering tiles)
+
+displayMeld : (Tile -> String) -> String -> Meld -> String
+displayMeld show delimiter meld =
+  case meld of
+    Chow a b c -> displayTiles show delimiter [a,b,c]
+    Eyes tile -> displayTiles show delimiter [tile, tile]
+    Pong tile -> displayTiles show delimiter [tile, tile, tile]
+    Kong tile -> displayTiles show delimiter [tile, tile, tile, tile]
+    _ -> ""
+
+displayMeldsAsEmojis : List Meld -> String
+displayMeldsAsEmojis melds =
+  List.map (displayMeld emoji " ") melds
+    |> String.join ","
 
 emojis : List Tile -> String
 emojis tiles =
-  displaySorted emoji " " tiles
-
-show : Tile -> String
-show tile =
+  displaySortedTiles emoji " " tiles
+  
+displayTile : Tile -> String
+displayTile tile =
   case tile of
     Bamboo rank -> (Basics.toString rank) ++ " of Bamboos"
     Circle rank -> (Basics.toString rank) ++ " of Circles"
