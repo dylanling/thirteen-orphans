@@ -24,8 +24,8 @@ type Tile =
   | North
 
 int : Rank -> Int
-int rank =
-  case rank of 
+int r =
+  case r of 
     One -> 1
     Two -> 2
     Three -> 3

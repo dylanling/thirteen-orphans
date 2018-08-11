@@ -22,3 +22,29 @@ insertOrAppend item m =
 filterNot : (a -> Bool) -> List a -> List a
 filterNot predicate list =
   List.filter (\i -> not (predicate i)) list
+
+
+containsListLongerThan : Int -> List (List a) -> Bool
+containsListLongerThan n list =
+  list
+    |> List.map List.length
+    |> List.map ((<) n)
+    |> List.foldl (||) False
+
+appendToHeadOfSecond : a -> (List (List a), List (List a)) -> List (List a)
+appendToHeadOfSecond x lists =
+  let 
+    first = Tuple.first lists
+    rest = List.drop 1 (Tuple.second lists)
+    appended = 
+      case List.head (Tuple.second lists) of
+        Just list -> [x::list]
+        Nothing -> [[x]]
+  in 
+    first ++ appended ++ rest
+
+bloat : a -> List (List a) -> List (List (List a))
+bloat x list =
+  List.range 0 (List.length list)
+    |> List.map (\i -> (List.take i list, List.drop i list))
+    |> List.map (appendToHeadOfSecond x)

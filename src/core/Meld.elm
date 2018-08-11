@@ -31,6 +31,79 @@ meld tiles =
     _ -> 
       Invalid
 
+-- given a list of tiles within the same meldable group
+-- return all legal partitions of the list such that each
+-- partition can be evaluated as a meld
+-- 
+-- while recursing we need to aggressively terminate any
+-- time we've selected a partition that cannot be evaluated
+-- as a meld given that Bell numbers grow too quickly to
+-- possibly evaluate all partitions
+
+-- we should also quickly terminate for any list 
+-- of non-simples.
+melds : List Tile -> List (List Tile)
+melds tiles =
+  case tiles of
+    [] -> 
+      []
+    first::_ -> 
+      if isHonor (suit first) 
+      then meldsForHonors tiles 
+      else meldsForSimples tiles
+
+-- we're cheating a bit here because a set of some honor
+-- can only ever have one melded value given that there are
+-- at most four of any individual honor. otherwise we'd
+-- have to do some make coin change dynamic programming nonsense
+meldsForHonors : List Tile -> List (List Tile)
+meldsForHonors honors =
+  if List.member (List.length honors) [2, 3, 4]
+  then [honors]
+  else []
+
+meldsForSimples : List Tile -> List (List Tile)
+meldsForSimples simples = 
+  if List.length simples < 5
+  then 
+    case meld simples of
+      Invalid -> []
+      _ -> [simples]
+  else 
+    []
+
+meldsForSimplesStartingWith : List Tile -> List Tile -> List Tile -> List (List Tile)
+meldsForSimplesStartingWith current all tiles =
+  case current of
+    [] -> 
+      []
+    _ -> 
+      []
+
+meldsWithTileAdded : Tile -> List (List Tile) -> List (List Tile)
+
+canJoinMeld : Tile -> List Tile -> Bool
+canJoinMeld tile tiles =
+  case tiles of
+    [] -> True
+    [a] -> canBeInSameMeld tile a
+    _ -> not (meld ([tile] ++ tiles) == Invalid)
+
+canBeInSameMeld : Tile -> Tile -> Bool
+canBeInSameMeld a b =
+  let 
+    ranksInRange = \s t -> abs (s - t) < 3
+  in
+    case (a, b) of
+      (Bamboo x, Bamboo y) -> 
+        ranksInRange (int x) (int y)
+      (Circle x, Circle y) -> 
+        ranksInRange (int x) (int y)
+      (Character x, Character y) -> 
+        ranksInRange (int x) (int y)
+      _ ->
+        a == b
+
 meldableGroups : List Tile -> List (List Tile)
 meldableGroups tiles =
   [Winds, Dragons, Characters, Circles, Bamboos]

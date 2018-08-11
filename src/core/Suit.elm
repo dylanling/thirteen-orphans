@@ -25,6 +25,13 @@ suit tile =
     West -> Winds
     North -> Winds
 
+isHonor : Suit -> Bool
+isHonor suit =
+  case suit of
+    Dragons -> True
+    Winds -> True
+    _ -> False
+
 groupBySuits : List Tile -> EveryDict.EveryDict Suit (List Tile)
 groupBySuits tiles = 
   List.map (\tile -> (suit tile, tile)) tiles
