@@ -1,8 +1,9 @@
 module Suit exposing (..)
 
-import Utilities exposing (..)
-import Tile exposing (..)
 import EveryDict
+
+import Tile exposing (..)
+import Utilities exposing (..)
 
 type Suit =
     Dragons

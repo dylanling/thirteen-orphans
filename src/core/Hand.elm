@@ -8,6 +8,7 @@ type alias Hand =
   , open : List Meld
   }
 
-melds : Hand -> List (List Meld)
-melds hand =
-  []
+handMelds : Hand -> List (List Meld)
+handMelds hand =
+  melds (.closed hand)
+    |> List.map ((++) (.open hand))

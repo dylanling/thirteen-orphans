@@ -1,6 +1,6 @@
-module TileOrdering exposing (..)
+module TileOrdering exposing ( tileOrdering )
 
-import Ordering exposing (Ordering)
+import Ordering exposing ( Ordering )
 
 import Tile exposing (..)
 import Suit exposing (..)

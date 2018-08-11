@@ -2,11 +2,11 @@ module Meld exposing (..)
 
 import EveryDict
 import List.Unique
-import Ordering exposing (Ordering)
+import Ordering exposing ( Ordering )
 
 import Tile exposing (..)
 import Suit exposing (..)
-import TileOrdering exposing (..)
+import TileOrdering exposing ( tileOrdering )
 import Utilities exposing (..)
 
 type Meld = 

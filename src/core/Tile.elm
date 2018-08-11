@@ -35,3 +35,41 @@ int r =
     Seven -> 7
     Eight -> 8
     Nine -> 9
+
+allTiles : List Tile
+allTiles = 
+  [ Bamboo One
+  , Bamboo Two
+  , Bamboo Three
+  , Bamboo Four
+  , Bamboo Five
+  , Bamboo Six
+  , Bamboo Seven
+  , Bamboo Eight
+  , Bamboo Nine
+  , Circle One
+  , Circle Two
+  , Circle Three
+  , Circle Four
+  , Circle Five
+  , Circle Six
+  , Circle Seven
+  , Circle Eight
+  , Circle Nine
+  , Character One
+  , Character Two
+  , Character Three
+  , Character Four
+  , Character Five
+  , Character Six
+  , Character Seven
+  , Character Eight
+  , Character Nine
+  , Red
+  , Green
+  , White
+  , East
+  , South
+  , West
+  , North
+  ]

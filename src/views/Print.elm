@@ -2,7 +2,7 @@ module Print exposing (..)
 
 import Tile exposing (..)
 import Meld exposing (..)
-import TileOrdering exposing (tileOrdering)
+import TileOrdering exposing ( tileOrdering )
 
 displayTiles : (Tile -> String) -> String -> List Tile -> String
 displayTiles show delimiter tiles =
