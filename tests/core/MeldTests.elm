@@ -1,4 +1,4 @@
-module MeldTests exposing ( meldTest, meldableGroupsTest )
+module MeldTests exposing ( meldTest, meldsTest, meldableGroupsTest )
 
 import Test exposing (..)
 import Expect
@@ -20,7 +20,7 @@ meldTest =
           |> Expect.equal (Eyes (Circle Two))
     , test "chow" <|
         \_ -> meld [Bamboo Two, Bamboo Four, Bamboo Three] 
-          |> Expect.equal (Chow (Bamboo Two) (Bamboo Four) (Bamboo Three))
+          |> Expect.equal (Chow (Bamboo Two) (Bamboo Three) (Bamboo Four))
     , test "invalid 1" <|
         \_ -> meld [Bamboo Two, Bamboo Four, Bamboo Five] 
           |> Expect.equal Invalid
@@ -39,6 +39,29 @@ meldTest =
     , test "invalid 6" <|
         \_ -> meld [Bamboo Two, Bamboo Four, Character Three] 
           |> Expect.equal Invalid
+    ]
+
+meldsTest : Test
+meldsTest =
+  describe "Tests for hand melds"
+    [ test "simple pong" <|
+        \_ -> melds [Red, Red, Red] 
+          |> Expect.equal [[Pong Red]]
+    , test "simple chow" <|
+        \_ -> melds [Bamboo Four, Bamboo Two, Bamboo Three] 
+          |> Expect.equal [[Chow (Bamboo Two) (Bamboo Three) (Bamboo Four)]]
+    , test "simple chow plus one" <|
+        \_ -> melds [Bamboo Four, Bamboo Two, Bamboo One, Bamboo Three] 
+          |> Expect.equal []
+    , test "one one one two two two three three three" <|
+        \_ -> melds 
+          [ Bamboo One, Bamboo Two, Bamboo Three
+          , Bamboo One, Bamboo Two, Bamboo Three
+          , Bamboo One, Bamboo Two, Bamboo Three] 
+            |> Expect.equal 
+              [ [Pong (Bamboo One),Pong (Bamboo Two),Pong (Bamboo Three)]
+              , [Chow (Bamboo One) (Bamboo Two) (Bamboo Three),Chow (Bamboo One) (Bamboo Two) (Bamboo Three),Chow (Bamboo One) (Bamboo Two) (Bamboo Three)]
+              , [Eyes (Bamboo One),Chow (Bamboo One) (Bamboo Two) (Bamboo Three),Eyes (Bamboo Two),Eyes (Bamboo Three)]]
     ]
 
 meldableGroupsTest : Test

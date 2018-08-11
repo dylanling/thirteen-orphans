@@ -9,7 +9,6 @@ import Suit exposing (..)
 import TileOrdering exposing (..)
 import Utilities exposing (..)
 
-
 type Meld = 
     Eyes Tile 
   | Pong Tile

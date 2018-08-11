@@ -27,14 +27,6 @@ filterNot : (a -> Bool) -> List a -> List a
 filterNot predicate list =
   List.filter (\i -> not (predicate i)) list
 
-
-containsListLongerThan : Int -> List (List a) -> Bool
-containsListLongerThan n list =
-  list
-    |> List.map List.length
-    |> List.map ((<) n)
-    |> List.foldl (||) False
-
 appendToHeadOfSecond : a -> (List (List a), List (List a)) -> List (List a)
 appendToHeadOfSecond x lists =
   let 
@@ -47,6 +39,7 @@ appendToHeadOfSecond x lists =
   in 
     first ++ appended ++ rest
 
+-- https://stackoverflow.com/questions/35423903/haskell-all-possible-partitions-of-a-list
 bloat : a -> List (List a) -> List (List (List a))
 bloat x list =
   List.range 0 (List.length list)
@@ -67,7 +60,6 @@ cartesianProduct lists =
       [[]]
     x::xs -> 
       let
-        subproduct = cartesianProduct xs
-        applyToSubProduct = \k -> List.map ((::) k) subproduct
+        applyToSubProduct = \k -> List.map ((::) k) (cartesianProduct xs)
       in
         List.map applyToSubProduct x |> flatten

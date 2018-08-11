@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Test Suites",
-    "repository": "https://github.com/user/project.git",
+    "repository": "https://github.com/user/thirteen-orphans.git",
     "license": "BSD3",
     "source-directories": [
         "../src",
@@ -12,12 +12,14 @@
     ],
     "exposed-modules": [],
     "dependencies": {
+        "Chadtech/unique-list": "2.1.0 <= v < 3.0.0",
         "eeue56/elm-all-dict": "2.0.1 <= v < 3.0.0",
         "eeue56/elm-html-test": "5.2.0 <= v < 6.0.0",
         "elm-community/elm-test": "4.0.0 <= v < 5.0.0",
         "elm-community/list-extra": "7.1.0 <= v < 8.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
-        "elm-lang/html": "2.0.0 <= v < 3.0.0"
+        "elm-lang/html": "2.0.0 <= v < 3.0.0",
+        "matthewsj/elm-ordering": "1.1.0 <= v < 2.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"
 }
