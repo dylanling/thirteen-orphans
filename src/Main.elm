@@ -20,7 +20,7 @@ type alias Model =
 
 model : Model
 model =
-  { hand = { closed = [], open = []}
+  { hand = { closed = [], open = [] }
   , melds = []
   }
 

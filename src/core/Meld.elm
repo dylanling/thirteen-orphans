@@ -84,8 +84,10 @@ meldsForHonors honors =
 meldsForSimples : List Tile -> List (List (List Tile))
 meldsForSimples simples = 
   let
-    optimizedBloat = \tile melds -> bloat tile melds |> List.filter allCanBecomeValidMelds
-    applyBloat = \n l -> l |> List.map (optimizedBloat n) |> flatten
+    optimizedBloat = \tile melds -> 
+      bloat tile melds |> List.filter allCanBecomeValidMelds
+    applyBloat = \n l -> 
+      l |> List.map (optimizedBloat n) |> flatten
   in  
     List.foldl applyBloat [[]] simples
       |> List.filter allValidMelds
